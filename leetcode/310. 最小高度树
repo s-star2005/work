@@ -1,0 +1,99 @@
+struct node
+{
+    int val,id;
+};
+bool operator <(node a,node b)
+{
+    return a.val<b.val;
+}
+node a[20001];
+class Solution {
+public:
+    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) 
+    {
+        vector<int> ans;
+        if(n==1)
+        {
+            ans.push_back(0);
+            return ans;
+        }
+        vector<int> road[20001];
+        for(auto &edge:edges)
+        {
+            road[edge[0]].push_back(edge[1]);
+            road[edge[1]].push_back(edge[0]);
+        }
+        for(int i=0;i<n;i++)
+        {
+            a[i].id=-1;
+        }
+        queue<int> q;
+        q.push(1);
+        int cnt=0;
+        while(!q.empty())
+        {
+            int len=q.size();
+            while(len--)
+            {
+                int now=q.front();
+                q.pop();
+                a[now].id=now,a[now].val=cnt;
+                for(int j=0;j<road[now].size();j++)
+                {
+                    if(a[road[now][j]].id==-1)
+                    {
+                        q.push(road[now][j]);
+                    }
+                }
+            }
+            cnt++;
+        }
+        sort(a,a+n);
+        int x=a[n-1].id;
+        // ans.push_back(x);
+        // return ans;
+        for(int i=0;i<n;i++)
+        {
+            a[i].id=-1;
+        }
+        vector<int> fa(n,-1);
+        q.push(x);
+        cnt=0;
+        while(!q.empty())
+        {
+            int len=q.size();
+            while(len--)
+            {
+                int now=q.front();
+                q.pop();
+                a[now].id=now,a[now].val=cnt;
+                for(int j=0;j<road[now].size();j++)
+                {
+                    if(a[road[now][j]].id==-1)
+                    {
+                        fa[road[now][j]]=now;
+                        q.push(road[now][j]);
+                    }
+                }
+            }
+            cnt++;
+        }
+        sort(a,a+n);
+        int y=a[n-1].id;
+        // ans.push_back(y);
+        // return ans;
+        vector<int> path;
+        while(y!=-1)
+        {
+            path.push_back(y);
+            y=fa[y];
+        }
+        int mid=a[n-1].val/2;
+        ans.push_back(path[mid]);
+        if(a[n-1].val%2!=0)
+        {
+            ans.push_back(path[mid+1]);
+        }
+        return ans;
+    }
+};
