@@ -1,0 +1,40 @@
+long long vis[1<<13][20];
+int n;
+void dfs(int now,long long sum,vector<vector<int>> &graph)
+{
+    if(sum==(1<<n)-1)
+    {
+        return;
+    }
+    for(int i=0;i<graph[now].size();i++)
+    {
+        int t=graph[now][i];
+        if(vis[sum][now]+1<vis[(sum|(1<<t))][t])
+        {
+            vis[(sum|(1<<t))][t]=vis[sum][now]+1; 
+            dfs(t,sum|(1<<t),graph);
+        }
+    }
+}
+class Solution {
+public:
+    int shortestPathLength(vector<vector<int>>& graph) {
+        for(int i=0;i<(1<<13);i++)
+        {
+            for(int j=0;j<12;j++)
+            vis[i][j]=INT_MAX;
+        }
+        n=graph.size();
+        long long ans=INT_MAX;
+        for(int i=0;i<n;i++)//遍历每个点为起始点
+        {
+            vis[1<<i][i]=0;
+            dfs(i,1<<i,graph);
+        }
+        for(int i=0;i<n;i++)
+        {
+            ans=min(ans,vis[(1<<n)-1][i]);
+        }
+        return ans;
+    }
+};

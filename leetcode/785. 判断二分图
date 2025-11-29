@@ -1,0 +1,50 @@
+int a[2][101];
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n=graph.size();
+        for(int i=0;i<2;i++)
+        {
+            for(int j=0;j<n;j++)
+            a[i][j]=0;
+        }
+        int cnt=0;
+        queue<int> q;
+        for(int i=0;i<n;i++)
+        {
+            if(graph[i].size()!=0&&a[0][i]==0&&a[1][i]==0)
+            {
+                q.push(i);
+                a[0][i]=a[1][i]=2;
+                while(!q.empty())
+                {
+                    cnt++;
+                    int len=q.size();
+                    while(len--)
+                    {
+                        int now=q.front();
+                        q.pop();
+                        for(int i=0;i<graph[now].size();i++)
+                        {
+                            int nt=graph[now][i];
+                            if(a[cnt%2][nt]!=0)
+                            {
+                                continue;
+                            }
+                            a[cnt%2][nt]=1;
+                            q.push(nt);
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=1;i<n;i++)
+        {
+            if(a[0][i]==1&&a[1][i]==1)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+};

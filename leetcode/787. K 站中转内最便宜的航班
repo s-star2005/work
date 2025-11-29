@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<int> vis(n+1);
+        for(int i=0;i<=n;i++)
+        {
+            vis[i]=INT_MAX;
+        }
+        map<int,vector<pair<int,int>>> rd;
+        for(int i=0;i<flights.size();i++)
+        {
+            rd[flights[i][0]].push_back({flights[i][1],flights[i][2]});
+        }
+        queue<pair<int,int>> q;
+        q.push({src,0});
+        k++;
+        while(!q.empty()&&k)
+        {
+            k--;
+            int len=q.size();
+            while(len--)
+            {
+                int now=q.front().first,cnt=q.front().second;
+                q.pop();
+                for(int i=0;i<rd[now].size();i++)
+                {
+                    if(cnt+rd[now][i].second<vis[rd[now][i].first])
+                    {
+                        vis[rd[now][i].first]=cnt+rd[now][i].second;
+                        q.push({rd[now][i].first,cnt+rd[now][i].second});
+                    }
+                }
+            }
+        }
+        if(vis[dst]==INT_MAX)
+        {
+            return -1;
+        }
+        else return vis[dst];
+    }
+};
